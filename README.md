@@ -1,37 +1,29 @@
-# open-tunnel
-Simple ngrok style open tunnel for share your files and expose your data through raw TCP connection
+# Open-Tunnel: Simple Reverse TCP Tunnel
+
+**Goal:** Create a lightweight, `ngrok`-style open tunnel to securely share local files or expose services via a raw TCP connection.
+
+## Server Configuration (VM)
+
+The tunnel server utilizes three ports to establish the proxy connection: 
+
+Note: deployed on e2-micro instance on Google Compute Engine
 
 
-working module
+| Port | Role | Description |
+| :--- | :--- | :--- |
+| **9000** | **Control** | Persistent link for the server to send commands   to the client. |
+| **9001** | **Public** | The exposed port that receives all incoming internet traffic. |
+| **9002** | **Data** | The channel used for proxying the actual application data. |
 
-Step 1:
+## Execution Flow
 
-there's simple server running in e2-micro VM (1GB RAM) in compute engine which will open three ports for reverse tunnel proxy
-
-port action
-9000 open connection with ur local running client  
-9001 expose the connection globally 
-9002 data transfer portal
-
-step 2:
-
-when u run the "opentunnel 8080" (assume 8080 should be the local server u want to expose globally)
-you'll get the http:sdsjdsb:9001 some sample URL like this 
-
-client will execute connection to VM:9000 keep it open
-when u hit the http:sdsjdsb:9001 server will notify the client there's new request came so 
-open a new TCP connection to 9002 
-
-client -> 9002 stay connected 
-
-this 9002 will be mapped to 9001
-which routes all the traffic to 9002 when it's being hit 
-this connection will kept open until there's intteruption happend if 
+1.  **Startup:** Client runs `opentunnel 8080` (default: 8080) and establishes a permanent connection to **Server:9000**.
+2.  **Public Hit:** An external user connects to the tunnel's public address (e.g., `http://35.224.59.81:9001`).
+3.  **Command Sent:** Server:9001 receives the request and sends a `"new"` command over the Control Channel (**9000**) to the client.
+4.  **Client Connects:** The client immediately opens two new connections:
+    * Outbound Data Connection to **Server:9002**.
+    * Local Connection to the service on **localhost:8080**.
+5.  **Proxying:** The server stitches the Public Connection (9001) to the new Data Connection (9002), creating a real-time, bidirectional proxy pipe between the internet user and the local service.
 
 
-
-
-
-
-
-
+This pipe remains active until either end closes the connection.
