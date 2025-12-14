@@ -27,3 +27,8 @@ Note: deployed on e2-micro instance on Google Compute Engine
 
 
 This pipe remains active until either end closes the connection.
+
+
+## Why Build?
+
+Out of curiosity, I started digging into how ngrok functions internally. Realizing that my needs were limited to file serving, I figured it made more sense to implement a simplified version myself.
