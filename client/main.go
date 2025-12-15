@@ -9,7 +9,7 @@ import (
 	"strconv"
 )
 
-const serverIP = "35.224.59.81"
+const serverIP = "34.133.55.212"
 const controlPort = "9000"
 const externalPort = "9001"
 const dataPort = "9002"
