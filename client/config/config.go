@@ -4,36 +4,26 @@ import (
 	"os"
 	"strconv"
 
-	"opentunnel/server/constants"
+	"opentunnel/client/constants"
 )
 
 type Config struct {
+	ServerIP     string
 	ControlPort  string
 	ExternalPort string
 	DataPort     string
 	HTTPPort     string
-	JWTSecret    string
-	TokenExpiry  int
-	DBHost       string
-	DBPort       string
-	DBUser       string
-	DBPassword   string
-	DBName       string
+	LocalPort    int
 }
 
 func NewConfig() *Config {
 	return &Config{
+		ServerIP:     getEnv("SERVER_IP", "34.133.55.212"),
 		ControlPort:  getEnv("CONTROL_PORT", constants.ControlPort),
 		ExternalPort: getEnv("EXTERNAL_PORT", constants.ExternalPort),
 		DataPort:     getEnv("DATA_PORT", constants.DataPort),
-		HTTPPort:     getEnv("HTTP_PORT", constants.HTTPPort),
-		JWTSecret:    getEnv("JWT_SECRET", "opentunnel-secret-key-change-in-production"),
-		TokenExpiry:  getEnvInt("TOKEN_EXPIRY_HOURS", 24),
-		DBHost:       getEnv("DB_HOST", "localhost"),
-		DBPort:       getEnv("DB_PORT", "5432"),
-		DBUser:       getEnv("DB_USER", "postgres"),
-		DBPassword:   getEnv("DB_PASSWORD", "postgres"),
-		DBName:       getEnv("DB_NAME", "opentunnel"),
+		HTTPPort:     getEnv("HTTP_PORT", "8081"),
+		LocalPort:    getEnvInt("LOCAL_PORT", constants.DefaultLocalPort),
 	}
 }
 
@@ -51,4 +41,16 @@ func getEnvInt(key string, fallback int) int {
 		}
 	}
 	return fallback
+}
+
+func (c *Config) ServerAddr() string {
+	return c.ServerIP + ":" + c.ControlPort
+}
+
+func (c *Config) DataAddr() string {
+	return c.ServerIP + ":" + c.DataPort
+}
+
+func (c *Config) ExposedURL() string {
+	return "http://" + c.ServerIP + ":" + c.ExternalPort
 }

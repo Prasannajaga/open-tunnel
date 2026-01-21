@@ -32,6 +32,15 @@ func Connect(cfg *config.Config) error {
 	return nil
 }
 
+func TestConnection() {
+	cfg := config.NewConfig()
+	fmt.Println("cfg", cfg)
+	if err := Connect(cfg); err != nil {
+		log.Fatalf("Database connection failed: %v", err)
+	}
+	defer Close()
+}
+
 func Close() {
 	if DB != nil {
 		DB.Close()

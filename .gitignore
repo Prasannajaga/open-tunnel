@@ -1,2 +1,3 @@
 client/go.mod
 terraform/.terraform
+.env
