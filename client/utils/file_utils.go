@@ -31,6 +31,12 @@ func SaveToken(token string) error {
 }
 
 func LoadToken() (string, error) {
+	// 1. Check Env
+	if token := os.Getenv("OPENTUNNEL_TOKEN"); token != "" {
+		return token, nil
+	}
+
+	// 2. Check File
 	path, err := GetTokenPath()
 	if err != nil {
 		return "", err

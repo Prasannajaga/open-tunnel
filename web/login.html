@@ -230,6 +230,24 @@
                     messageEl.className = 'message success';
                     tokenValue.textContent = data.token;
                     tokenDisplay.classList.add('show');
+
+                    // Handle CLI Auth Flow
+                    const params = new URLSearchParams(window.location.search);
+                    const sessionId = params.get('session_id');
+                    if (sessionId) {
+                        try {
+                            const cliResponse = await fetch(`/api/cli-auth/complete/${sessionId}`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ token: data.token })
+                            });
+                            if (cliResponse.ok) {
+                                messageEl.textContent = 'Login successful! You can now close this window and return to your terminal.';
+                            }
+                        } catch (err) {
+                            console.error('Failed to notify CLI auth completion', err);
+                        }
+                    }
                 } else {
                     messageEl.textContent = data.error || 'Login failed';
                     messageEl.className = 'message error';

@@ -8,4 +8,6 @@ const (
 	FlagHelpChar = "-h"
 	FlagPort     = "--port"
 	FlagPortChar = "-p"
+
+	FlagExport = "--export"
 )

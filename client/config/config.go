@@ -54,3 +54,6 @@ func (c *Config) DataAddr() string {
 func (c *Config) ExposedURL() string {
 	return "http://" + c.ServerIP + ":" + c.ExternalPort
 }
+func (c *Config) GetAuthURL() string {
+	return "http://" + c.ServerIP + ":" + c.HTTPPort + "/login"
+}
